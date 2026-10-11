@@ -112,8 +112,8 @@ async def process_time(message: Message, state: FSMContext):
 
     await state.set_state(OrderStates.waiting_for_phone)
     await message.answer(
-        "Zo'r! Oxirgi qadam: operatorlar siz bilan bog'lanishi uchun <b>haqiqiy ishlaydigan telefon raqamingizni</b> yuboring (masalan: <i>+998 90 123 45 67</i>):\n\n"
-        "Отлично! Последний шаг: отправьте <b>реальный рабочий номер телефона</b>, по которому с вами смогут связаться операторы (например: <i>+998 90 123 45 67</i>):",
+        "Zo'r! Oxirgi qadam: operatorlar siz bilan bog'lanishi uchun <b>haqiqiy ishlaydigan telefon raqamingizni</b> yuboring:\n\n"
+        "Отлично! Последний шаг: отправьте <b>реальный рабочий номер телефона</b>, по которому с вами смогут связаться операторы:",
         parse_mode="HTML",
         reply_markup=None,
     )
