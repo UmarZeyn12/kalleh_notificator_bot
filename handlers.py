@@ -121,7 +121,6 @@ async def process_time(message: Message, state: FSMContext):
 
 @router.message(OrderStates.waiting_for_phone)
 async def process_phone(message: Message, state: FSMContext):
-    # Теперь принимаем только текстовый ввод номера
     if not message.text:
         await message.answer(
             "Iltimos, telefon raqamingizni matn ko'rinishida yuboring.\nПожалуйста, отправьте номер телефона текстом."
