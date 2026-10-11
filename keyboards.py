@@ -22,22 +22,6 @@ def get_location_keyboard():
     return keyboard
 
 
-def get_contact_keyboard():
-    keyboard = ReplyKeyboardMarkup(
-        keyboard=[
-            [
-                KeyboardButton(
-                    text="📞 Kontaktni yuborish / Отправить контакт",
-                    request_contact=True,
-                )
-            ]
-        ],
-        resize_keyboard=True,
-        one_time_keyboard=True,
-    )
-    return keyboard
-
-
 def get_tuman_keyboard():
     tumans = [
         "Bektemir tumani",

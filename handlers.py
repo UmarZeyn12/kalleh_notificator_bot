@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from dotenv import load_dotenv
 
 from states import OrderStates
-from keyboards import get_location_keyboard, get_contact_keyboard, get_tuman_keyboard
+from keyboards import get_location_keyboard, get_tuman_keyboard
 
 load_dotenv()
 ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID")
@@ -20,7 +20,7 @@ WELCOME_TEXT = (
     "2) 'Oltin Kuz' setidan nechta kerakligi\n"
     "3) Yashaydigan tumaningiz (rayon)\n"
     "4) Yetkazib berish uchun qulay vaqt\n"
-    "5) 📞 Aloqa uchun telefon raqamingiz\n\n"
+    "5) 📞 Bog'lanish uchun ishlaydigan telefon raqamingiz\n\n"
     "—\n\n"
     "Здравствуйте! 😊\n\n"
     "Для оформления заказа пришлите, пожалуйста, в правильном порядке:\n"
@@ -28,7 +28,7 @@ WELCOME_TEXT = (
     "2) Количество сетов 'Oltin Kuz'\n"
     "3) Ваш район (туман)\n"
     "4) Удобное время для доставки\n"
-    "5) 📞 Контактный номер телефона"
+    "5) 📞 Рабочий номер телефона для связи"
 )
 
 
@@ -112,24 +112,23 @@ async def process_time(message: Message, state: FSMContext):
 
     await state.set_state(OrderStates.waiting_for_phone)
     await message.answer(
-        "Zo'r! Oxirgi qadam: aloqa uchun telefon raqamingizni yuboring (pastdagi tugma orqali yoki yozib).\n\n"
-        "Отлично! Последний шаг: отправьте ваш номер телефона (нажав кнопку ниже или написав текстом).",
-        reply_markup=get_contact_keyboard(),
+        "Zo'r! Oxirgi qadam: operatorlar siz bilan bog'lanishi uchun <b>haqiqiy ishlaydigan telefon raqamingizni</b> yuboring (masalan: <i>+998 90 123 45 67</i>):\n\n"
+        "Отлично! Последний шаг: отправьте <b>реальный рабочий номер телефона</b>, по которому с вами смогут связаться операторы (например: <i>+998 90 123 45 67</i>):",
+        parse_mode="HTML",
+        reply_markup=None,
     )
 
 
 @router.message(OrderStates.waiting_for_phone)
 async def process_phone(message: Message, state: FSMContext):
-    phone = None
-    if message.contact:
-        phone = message.contact.phone_number
-    elif message.text:
-        phone = message.text
-    else:
+    # Теперь принимаем только текстовый ввод номера
+    if not message.text:
         await message.answer(
-            "Iltimos, telefon raqamingizni yuboring.\nПожалуйста, отправьте номер телефона."
+            "Iltimos, telefon raqamingizni matn ko'rinishida yuboring.\nПожалуйста, отправьте номер телефона текстом."
         )
         return
+
+    phone = message.text
 
     data = await state.get_data()
     address = data.get("address")
@@ -149,7 +148,7 @@ async def process_phone(message: Message, state: FSMContext):
         f"📦 <b>Soni / Количество ('Oltin Kuz'):</b> {quantity}\n"
         f"🏙 <b>Tuman / Район:</b> {tuman}\n"
         f"⏰ <b>Vaqt / Время:</b> {delivery_time}\n"
-        f"📞 <b>Telefon / Телефон:</b> {phone}"
+        f"📞 <b>Ishchi telefon / Рабочий телефон:</b> <code>{phone}</code>"
     )
 
     if ADMIN_CHAT_ID:
